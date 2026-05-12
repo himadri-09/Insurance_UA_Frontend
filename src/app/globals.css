@@ -1,0 +1,93 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { @apply bg-white text-gray-900 antialiased; }
+}
+
+@layer components {
+  .card { @apply bg-white border border-gray-300 rounded-xl; }
+  .card-hover { @apply card transition-all duration-200 hover:border-gray-400 hover:bg-gray-50; }
+  .btn-primary { @apply px-5 py-2.5 bg-black text-white font-medium rounded-lg transition-all duration-200 hover:bg-gray-800 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed; }
+  .btn-secondary { @apply px-5 py-2.5 bg-gray-200 text-gray-900 font-medium rounded-lg border border-gray-400 transition-all duration-200 hover:bg-gray-300 active:scale-[0.98]; }
+  .input { @apply w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black transition-all duration-200; }
+  .input-sm { @apply w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-black/20 transition-all duration-200; }
+  .label { @apply block text-xs font-medium text-black mb-1.5 uppercase tracking-wider; }
+  .badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium; }
+  .badge-accept { @apply badge bg-green-100 text-green-900 border border-green-300; }
+  .badge-review { @apply badge bg-yellow-100 text-yellow-900 border border-yellow-300; }
+  .badge-decline { @apply badge bg-red-100 text-red-900 border border-red-300; }
+  .badge-refer { @apply badge bg-gray-200 text-gray-900 border border-gray-400; }
+}
+
+@keyframes score-fill { from { stroke-dashoffset: 283; } }
+.score-ring { animation: score-fill 1.2s ease-out forwards; }
+
+@keyframes subtle-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+.animate-subtle-pulse { animation: subtle-pulse 2s ease-in-out infinite; }
+
+/* Replace the existing .brief-content section with this */
+
+.brief-content {
+  @apply text-sm leading-relaxed max-w-full overflow-visible break-words;
+}
+.brief-content h1 {
+  @apply text-2xl font-bold text-black mt-6 mb-3 pb-2 border-b-2 border-black break-words;
+}
+.brief-content h2 {
+  @apply text-xl font-bold text-black mt-5 mb-3 pb-1 border-b border-gray-400 break-words;
+}
+.brief-content h3 {
+  @apply text-lg font-semibold text-gray-900 mt-4 mb-2 break-words;
+}
+.brief-content h4 {
+  @apply text-base font-semibold text-gray-800 mt-3 mb-2 break-words;
+}
+.brief-content h5 {
+  @apply text-base font-semibold text-gray-700 mt-3 mb-2 break-words;
+}
+.brief-content h6 {
+  @apply text-base font-semibold text-gray-700 mt-3 mb-2 break-words;
+}
+.brief-content p {
+  @apply text-sm text-gray-700 leading-relaxed mb-3 break-words;
+}
+.brief-content strong {
+  @apply text-black font-bold break-words;
+}
+.brief-content em {
+  @apply text-gray-800 italic break-words;
+}
+.brief-content ul {
+  @apply list-disc list-outside ml-6 text-sm text-gray-700 mb-3 space-y-2;
+}
+.brief-content ol {
+  @apply list-decimal list-outside ml-6 text-sm text-gray-700 mb-3 space-y-2;
+}
+.brief-content li {
+  @apply break-words;
+}
+.brief-content hr {
+  @apply border-gray-300 my-4;
+}
+.brief-content code {
+  @apply font-mono text-xs bg-gray-200 px-2 py-1 rounded text-gray-900 break-all;
+}
+.brief-content pre {
+  @apply bg-gray-200 p-3 rounded mb-3 overflow-x-auto break-words;
+}
+.brief-content blockquote {
+  @apply border-l-4 border-gray-400 pl-4 text-gray-700 italic my-3 break-words;
+}
+.brief-content table {
+  @apply w-full text-sm text-gray-700 mb-4 border-collapse table-fixed;
+}
+.brief-content th {
+  @apply text-left text-xs text-gray-800 font-bold uppercase tracking-wider p-2 border border-gray-400 bg-gray-100 break-words;
+}
+.brief-content td {
+  @apply p-2 border border-gray-300 break-words;
+}

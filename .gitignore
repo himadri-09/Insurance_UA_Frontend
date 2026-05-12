@@ -1,0 +1,17 @@
+.next
+node_modules
+dist
+build
+out
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.DS_Store
+.vscode
+.idea
+*.log
+*.tmp
+*.bak
+*.swp
