@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { getSubmission } from "@/lib/api";
 import type { SubmissionOutput } from "@/types";
-import ReactMarkdown from "react-markdown";
-import { ArrowLeft, FileText, AlertTriangle, CheckCircle2, XCircle, MessageSquare, Building2, Shield, TrendingUp, Clock, BookOpen, Loader2, MapPin } from "lucide-react";
+import { marked } from 'marked';
+import { ArrowLeft, FileText, AlertTriangle, CheckCircle2, XCircle, MessageSquare, Building2, TrendingUp, Clock, BookOpen, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 function ScoreRing({ value, label, color }: { value: number; label: string; color: string }) {
@@ -96,39 +96,10 @@ export default function SubmissionDetailPage() {
       {activeTab === "brief" && (
         <div className="flex flex-col gap-6">
           <div className="card p-6 w-full">
-            <div className="brief-content prose prose-sm max-w-none">
-              <ReactMarkdown
-                components={{
-                  h1: ({node, ...props}) => <h1 className="text-3xl font-bold text-black mt-8 mb-4 pb-3 border-b-2 border-black" {...props} />,
-                  h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-black mt-7 mb-4 pb-2 border-b border-gray-300" {...props} />,
-                  h3: ({node, ...props}) => <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3" {...props} />,
-                  h4: ({node, ...props}) => <h4 className="text-lg font-semibold text-gray-800 mt-5 mb-2" {...props} />,
-                  h5: ({node, ...props}) => <h5 className="text-base font-semibold text-gray-700 mt-4 mb-2" {...props} />,
-                  h6: ({node, ...props}) => <h6 className="text-sm font-semibold text-gray-600 mt-3 mb-2" {...props} />,
-                  p: ({node, ...props}) => <p className="text-sm text-gray-700 leading-relaxed mb-4" {...props} />,
-                  strong: ({node, ...props}) => <strong className="text-black font-bold" {...props} />,
-                  em: ({node, ...props}) => <em className="text-gray-800 italic" {...props} />,
-                  ul: ({node, ...props}) => <ul className="list-disc list-outside ml-6 text-sm text-gray-700 mb-4 space-y-2" {...props} />,
-                  ol: ({node, ...props}) => <ol className="list-decimal list-outside ml-6 text-sm text-gray-700 mb-4 space-y-2" {...props} />,
-                  li: ({node, ...props}) => <li className="text-sm text-gray-700" {...props} />,
-                  code: ({node, ...props}: any) => {
-                    const isInline = !props.className?.includes('hljs');
-                    return isInline ? <code className="font-mono text-xs bg-gray-100 px-2 py-1 rounded text-gray-900" {...props} /> : <code className="font-mono text-xs bg-gray-100 text-gray-900 block p-3 mb-4 overflow-x-auto rounded" {...props} />;
-                  },
-                  pre: ({node, ...props}) => <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto mb-4" {...props} />,
-                  blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-gray-400 pl-4 text-gray-700 italic my-4 bg-gray-50 py-2 pr-4" {...props} />,
-                  hr: ({node, ...props}) => <hr className="border-gray-300 my-6" {...props} />,
-                  table: ({node, ...props}) => <table className="w-full border-collapse border border-gray-300 mb-4 text-sm" {...props} />,
-                  thead: ({node, ...props}) => <thead className="bg-gray-200" {...props} />,
-                  tbody: ({node, ...props}) => <tbody {...props} />,
-                  tr: ({node, ...props}) => <tr className="border border-gray-300" {...props} />,
-                  td: ({node, ...props}) => <td className="border border-gray-300 px-3 py-2 text-gray-700" {...props} />,
-                  th: ({node, ...props}) => <th className="border border-gray-300 px-3 py-2 text-gray-900 font-semibold" {...props} />,
-                }}
-              >
-                {data.risk_brief_markdown || "*No brief generated*"}
-              </ReactMarkdown>
-            </div>
+            <div
+              className="brief-content prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{ __html: marked.parse(data.risk_brief_markdown || '*No brief generated*') as string }}
+            />
           </div>
           {(data.broker_questions.length > 0 || data.referral_required) && (
             <div className="space-y-4">
@@ -186,7 +157,6 @@ export default function SubmissionDetailPage() {
       {/* Evidence Tab */}
       {activeTab === "evidence" && (
         <div className="space-y-4">
-          {/* Retrieved Evidence from RAG */}
           <div className="card p-5">
             <h3 className="text-sm font-medium text-black mb-4">
               Retrieved Evidence ({data.appetite_assessment?.rule_results?.length || 0} rules applied)
@@ -195,10 +165,7 @@ export default function SubmissionDetailPage() {
               <div className="space-y-3">
                 {data.appetite_assessment.reasons.map((r: string, i: number) => (
                   <div key={i} className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-xs text-gray-600 mb-1.5">
-                      <BookOpen className="w-3 h-3" />
-                      Rule {i + 1}
-                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-600 mb-1.5"><BookOpen className="w-3 h-3" />Rule {i + 1}</div>
                     <p className="text-xs text-gray-700">{r}</p>
                   </div>
                 ))}
@@ -208,7 +175,6 @@ export default function SubmissionDetailPage() {
             )}
           </div>
 
-          {/* Broker Questions as evidence of analysis */}
           {data.broker_questions.length > 0 && (
             <div className="card p-5">
               <h3 className="text-sm font-medium text-black mb-4">
@@ -217,10 +183,7 @@ export default function SubmissionDetailPage() {
               <div className="space-y-3">
                 {data.broker_questions.map((q: string, i: number) => (
                   <div key={i} className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-xs text-gray-600 mb-1.5">
-                      <AlertTriangle className="w-3 h-3" />
-                      Follow-up {i + 1}
-                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-600 mb-1.5"><AlertTriangle className="w-3 h-3" />Follow-up {i + 1}</div>
                     <p className="text-xs text-gray-700">{q}</p>
                   </div>
                 ))}
@@ -228,7 +191,6 @@ export default function SubmissionDetailPage() {
             </div>
           )}
 
-          {/* Citations from brief */}
           <div className="card p-5">
             <h3 className="text-sm font-medium text-black mb-4">
               Document Citations ({data.citations.length})
@@ -239,10 +201,7 @@ export default function SubmissionDetailPage() {
               <div className="space-y-3">
                 {data.citations.map((c: any, i: number) => (
                   <div key={i} className="bg-gray-100 rounded-lg p-4">
-                    <div className="flex items-center gap-2 text-xs text-gray-600 mb-1.5">
-                      <BookOpen className="w-3 h-3" />
-                      {c.source_doc}{c.page && ` · p.${c.page}`}
-                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-600 mb-1.5"><BookOpen className="w-3 h-3" />{c.source_doc}{c.page && ` · p.${c.page}`}</div>
                     {c.quote && <p className="text-xs text-gray-700 italic">{c.quote}</p>}
                   </div>
                 ))}
