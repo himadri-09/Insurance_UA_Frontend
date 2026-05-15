@@ -98,7 +98,14 @@ export default function SubmissionDetailPage() {
           <div className="card p-6 w-full">
             <div
               className="brief-content prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{ __html: marked.parse(data.risk_brief_markdown || '*No brief generated*') as string }}
+              dangerouslySetInnerHTML={{ 
+                __html: marked.parse(
+                  (data.risk_brief_markdown || '*No brief generated*')
+                    .replace(/^```markdown\n?/, '')
+                    .replace(/\n?```$/, '')
+                    .trim()
+                ) as string 
+              }}
             />
           </div>
           {(data.broker_questions.length > 0 || data.referral_required) && (
