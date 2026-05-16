@@ -441,8 +441,6 @@ export default function SubmissionDetailPage() {
             <div className="space-y-0">
               {[
                 { label: "Appetite Score", value: `${data.appetite_assessment.score}/5` },
-                { label: "Winnability", value: `${Math.round(data.winnability_score * 100)}%` },
-                { label: "Priority", value: `${Math.round(data.priority_score * 100)}%` },
                 { label: "Queue", value: data.recommended_queue },
                 { label: "Referral Required", value: data.referral_required ? "Yes" : "No" },
               ].map(row => (

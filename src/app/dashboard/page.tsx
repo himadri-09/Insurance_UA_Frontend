@@ -4,7 +4,7 @@ import { listSubmissions } from "@/lib/api";
 import type { SubmissionListItem } from "@/types";
 import Link from "next/link";
 import {
-  FileText, TrendingUp, Clock, AlertTriangle,
+  FileText, Clock, AlertTriangle,
   ArrowRight, Upload, CheckCircle2, XCircle, Search,
 } from "lucide-react";
 
@@ -15,28 +15,18 @@ function ScoreRing({ score }: { score: number }) {
   const r = 18;
   const circumference = 2 * Math.PI * r;
   const offset = circumference - (pct / 100) * circumference;
-  const color =
-    score >= 4 ? "#16a34a" : score === 3 ? "#d97706" : "#dc2626";
+  const color = score >= 4 ? "#16a34a" : score === 3 ? "#d97706" : "#dc2626";
 
   return (
     <div className="relative flex items-center justify-center w-11 h-11 shrink-0">
       <svg width="44" height="44" viewBox="0 0 44 44">
         <circle cx="22" cy="22" r={r} fill="none" stroke="#e5e7eb" strokeWidth="3.5" />
-        <circle
-          cx="22" cy="22" r={r} fill="none"
-          stroke={color} strokeWidth="3.5"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
+        <circle cx="22" cy="22" r={r} fill="none" stroke={color} strokeWidth="3.5"
+          strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset}
           transform="rotate(-90 22 22)"
         />
       </svg>
-      <span
-        className="absolute text-xs font-bold"
-        style={{ color }}
-      >
-        {score}
-      </span>
+      <span className="absolute text-xs font-bold" style={{ color }}>{score}</span>
     </div>
   );
 }
@@ -54,6 +44,7 @@ function LobBadge({ lob }: { lob: string }) {
     workers_comp: { label: "WC", cls: "bg-teal-100 text-teal-700" },
     bop: { label: "BOP", cls: "bg-indigo-100 text-indigo-700" },
     multi_line: { label: "Multi", cls: "bg-gray-100 text-gray-700" },
+    other: { label: "Other", cls: "bg-gray-100 text-gray-600" },
   };
   const key = lob.toLowerCase().replace(/ /g, "_");
   const cfg = map[key] || { label: lob.replace(/_/g, " ").toUpperCase(), cls: "bg-gray-100 text-gray-600" };
@@ -73,9 +64,6 @@ function ActionPill({ status, queue }: { status: string; queue: string }) {
   if (status === "decline" || queue === "decline-review") {
     label = "Decline";
     cls = "text-red-700 bg-red-50 border border-red-200";
-  } else if (status === "accept" && (queue === "preferred-commercial" || queue === "standard-commercial")) {
-    label = "Quote";
-    cls = "text-green-700 bg-green-50 border border-green-200";
   } else if (queue === "referral-senior-uw") {
     label = "Refer to Senior Underwriter";
     cls = "text-orange-700 bg-orange-50 border border-orange-200";
@@ -131,18 +119,13 @@ export default function DashboardPage() {
   const avgTime = completed.length > 0
     ? completed.reduce((a, b) => a + b.processing_time, 0) / completed.length
     : 0;
-  const avgWin = completed.length > 0
-    ? completed.reduce((a, b) => a + b.winnability, 0) / completed.length
-    : 0;
 
   const filtered = submissions.filter(s =>
     !search || s.insured_name?.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Greeting
   const hour = new Date().getHours();
-  const greeting =
-    hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
   const day = new Date().toLocaleDateString("en-US", { weekday: "long" });
 
   return (
@@ -151,34 +134,27 @@ export default function DashboardPage() {
       {/* ── Greeting ── */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            {greeting} 👋
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900">{greeting} 👋</h1>
           <p className="text-sm text-gray-400 mt-0.5">Happy {day}</p>
         </div>
-        <Link
-          href="/dashboard/upload"
-          className="flex items-center gap-2 bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-gray-700 transition-colors"
-        >
+        <Link href="/dashboard/upload"
+          className="flex items-center gap-2 bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-gray-700 transition-colors">
           <Upload className="w-4 h-4" /> New Submission
         </Link>
       </div>
 
-      {/* ── Stats ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      {/* ── Stats — no winnability ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
         <StatCard label="Total Submissions" value={submissions.length} icon={FileText} color="text-violet-500" />
         <StatCard label="Avg Processing" value={`${avgTime.toFixed(0)}s`} icon={Clock} color="text-amber-500" />
-        <StatCard label="Avg Winnability" value={completed.length > 0 ? `${Math.round(avgWin * 100)}%` : "—"} icon={TrendingUp} color="text-green-500" />
         <StatCard label="Referrals" value={submissions.filter(s => s.referral_required).length} icon={AlertTriangle} color="text-orange-500" />
       </div>
 
-      {/* ── All Submissions Table ── */}
+      {/* ── Submissions Table ── */}
       <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-        {/* Table header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="text-sm font-semibold text-gray-900">All Submissions</h2>
           <div className="flex items-center gap-3">
-            {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
               <input
@@ -189,16 +165,14 @@ export default function DashboardPage() {
                 className="pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 w-48"
               />
             </div>
-            <Link
-              href="/dashboard/upload"
-              className="flex items-center gap-1.5 text-xs text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
-            >
+            <Link href="/dashboard/upload"
+              className="flex items-center gap-1.5 text-xs text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors">
               + Add Case
             </Link>
           </div>
         </div>
 
-        {/* Column headers */}
+        {/* Column headers — Company, LOB, Risk Appetite, Recommended Action, Date Added */}
         <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-4 px-6 py-2 border-b border-gray-50 bg-gray-50/60">
           {["Company", "Line of Business", "Risk Appetite", "Recommended Action", "Date Added"].map(h => (
             <span key={h} className="text-xs text-gray-400 font-medium uppercase tracking-wider">{h}</span>
@@ -223,11 +197,9 @@ export default function DashboardPage() {
         ) : (
           <div className="divide-y divide-gray-50">
             {filtered.map(sub => (
-              <Link
-                key={sub.id}
-                href={`/dashboard/submissions/${sub.id}`}
-                className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-4 items-center px-6 py-4 hover:bg-gray-50/80 transition-colors group"
-              >
+              <Link key={sub.id} href={`/dashboard/submissions/${sub.id}`}
+                className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-4 items-center px-6 py-4 hover:bg-gray-50/80 transition-colors group">
+
                 {/* Company */}
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate group-hover:text-gray-700">
@@ -240,32 +212,22 @@ export default function DashboardPage() {
                       ? <XCircle className="w-3 h-3 text-red-400" />
                       : <Clock className="w-3 h-3 text-gray-300 animate-pulse" />
                     }
-                    {sub.status}
+                    {new Date(sub.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    {" · "}{sub.processing_time?.toFixed(0)}s
                   </p>
                 </div>
 
                 {/* LOB */}
-                <div>
-                  <LobBadge lob={sub.lob} />
-                </div>
+                <div><LobBadge lob={sub.lob} /></div>
 
                 {/* Risk Appetite ring */}
-                <div>
-                  <ScoreRing score={sub.appetite_score} />
-                </div>
+                <div><ScoreRing score={sub.appetite_score} /></div>
 
                 {/* Recommended Action */}
-                <div>
-                  <ActionPill status={sub.appetite_status} queue={sub.queue} />
-                </div>
+                <div><ActionPill status={sub.appetite_status} queue={sub.queue} /></div>
 
-                {/* Date + arrow */}
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400">
-                    {new Date(sub.created_at).toLocaleDateString("en-US", {
-                      month: "short", day: "numeric", year: "numeric",
-                    })}
-                  </span>
+                {/* Arrow */}
+                <div className="flex justify-end">
                   <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 transition-colors" />
                 </div>
               </Link>
