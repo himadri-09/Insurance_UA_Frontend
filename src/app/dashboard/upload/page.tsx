@@ -118,7 +118,7 @@ export default function UploadPage() {
           <div className="flex justify-center mb-8">
             <div className="card p-6 min-w-[160px]">
               <div className="text-xs text-ink-500 uppercase tracking-wider mb-2">Appetite</div>
-              <div className="text-3xl font-display text-ink-50">
+              <div className="text-3xl font-display text-gray-900">
                 {result.appetite_assessment.score}/5
               </div>
               <div className="text-xs text-ink-500 mt-1 capitalize">
@@ -164,7 +164,7 @@ export default function UploadPage() {
                 <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs transition-all duration-300 ${
                   i < currentStage ? "bg-accent-green/20 text-accent-green"
                   : i === currentStage ? "bg-accent/20 text-accent animate-subtle-pulse"
-                  : "bg-ink-800 text-ink-600"
+                  : "bg-gray-100 text-gray-500"
                 }`}>
                   {i < currentStage
                     ? <CheckCircle2 className="w-3.5 h-3.5" />
