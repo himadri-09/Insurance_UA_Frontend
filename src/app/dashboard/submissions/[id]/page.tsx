@@ -10,6 +10,17 @@ import {
   TrendingDown, Minus, X, ShieldAlert, ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const PDFDownloadButton = dynamic(
+  () => import("@/components/PDFDownloadButton").then(m => m.PDFDownloadButton),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[30px] w-28 bg-gray-100 rounded-lg animate-pulse" />
+    ),
+  }
+);
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -269,6 +280,11 @@ export default function SubmissionDetailPage() {
   const positiveSignals = ruleResults.filter(r => r.severity === "positive" || r.severity === "override");
   const action = getRecommendedAction(data.appetite_assessment.status, data.recommended_queue);
 
+  const now = new Date();
+  const pdfFilename = `${(data.company?.name || "submission")
+    .replace(/\s+/g, "_")
+    .replace(/[^a-zA-Z0-9_]/g, "")}_${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}-${String(now.getMinutes()).padStart(2, "0")}.pdf`;
+
   return (
     <div className="w-full max-w-4xl mx-auto px-4 pb-16 space-y-6">
 
@@ -294,8 +310,11 @@ export default function SubmissionDetailPage() {
             <span className="text-xs text-gray-500">{data.processing_time_seconds.toFixed(1)}s</span>
           </div>
         </div>
-        <div className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium ${action.cls}`}>
-          {action.label}
+        <div className="flex items-center gap-3 shrink-0">
+          <PDFDownloadButton data={data} ruleResults={ruleResults} filename={pdfFilename} />
+          <div className={`px-4 py-2 rounded-full text-sm font-medium ${action.cls}`}>
+            {action.label}
+          </div>
         </div>
       </div>
 
