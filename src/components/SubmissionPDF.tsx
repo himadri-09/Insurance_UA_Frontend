@@ -317,6 +317,23 @@ export function SubmissionPDFDocument({ data, ruleResults }: Props) {
           </View>
         ) : null}
 
+        {/* ── Broker Follow-up Questions ── */}
+        {data.broker_questions && data.broker_questions.length > 0 && (
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Broker Follow-up Questions</Text>
+            {data.broker_questions.map((q, i) => (
+              <View key={i} style={{ flexDirection: "row", marginBottom: 6 }}>
+                <Text style={{ fontSize: 8, color: "#9ca3af", fontFamily: "Helvetica-Bold", marginRight: 6, minWidth: 14 }}>
+                  {i + 1}.
+                </Text>
+                <Text style={{ fontSize: 8.5, color: "#374151", lineHeight: 1.55, flex: 1 }}>
+                  {q}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+
         {/* ── Footer ── */}
         <View style={styles.footer} fixed>
           <Text style={styles.footerText}>TriagePilot — Exported {exportedAt}</Text>
