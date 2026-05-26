@@ -431,7 +431,10 @@ export default function SubmissionDetailPage() {
             <AlertTriangle className="w-4 h-4 text-orange-500" />
             <h2 className="text-sm font-semibold text-orange-900">Referral Note</h2>
           </div>
-          <p className="text-sm text-orange-800 leading-relaxed">{data.referral_note}</p>
+          <div
+      className="text-sm text-orange-800 leading-relaxed prose prose-sm max-w-none prose-p:text-orange-800 prose-strong:text-orange-900 prose-ol:text-orange-800 prose-ul:text-orange-800"
+      dangerouslySetInnerHTML={{ __html: marked.parse(data.referral_note) as string }}
+    />
         </div>
       )}
 
