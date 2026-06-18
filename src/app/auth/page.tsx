@@ -23,9 +23,13 @@ export default function AuthPage() {
         if (error) throw error;
         router.replace("/dashboard");
       } else {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        setMessage("Check your email for the confirmation link.");
+        if (data.session) {
+          router.replace("/dashboard");
+        } else {
+          setMessage("Check your email for the confirmation link.");
+        }
       }
     } catch (err: any) { setError(err.message || "Something went wrong"); }
     finally { setLoading(false); }
